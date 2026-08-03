@@ -1,0 +1,191 @@
+@import "tailwindcss";
+
+/* ============================================================
+   DESIGN TOKENS & ADAPTIVE LAYOUT PRIMITIVES
+   Unlayered on purpose: in CSS cascade layers, unlayered rules
+   beat anything in @layer (incl. Tailwind's utilities layer),
+   so these act as safe, global refinements without touching
+   any component logic or JSX structure.
+   ============================================================ */
+
+/* Dynamic viewport height: mobile browser chrome (address bar)
+   collapsing/expanding was clipping full-height scenes when
+   100vh was used. 100dvh tracks the *visible* viewport instead. */
+.min-h-screen {
+  min-height: 100dvh;
+}
+.h-screen {
+  height: 100dvh;
+}
+
+:root {
+  /* Fluid spacing scale — scales smoothly between mobile portrait
+     (375px) and large desktop (1920px) instead of jumping at
+     Tailwind's fixed breakpoints. Use via var(--space-*) where a
+     component wants gentler, continuous scaling. */
+  --space-2xs: clamp(0.375rem, 0.3rem + 0.35vw, 0.5rem);
+  --space-xs: clamp(0.625rem, 0.5rem + 0.5vw, 0.875rem);
+  --space-sm: clamp(1rem, 0.85rem + 0.6vw, 1.5rem);
+  --space-md: clamp(1.5rem, 1.2rem + 1.2vw, 2.5rem);
+  --space-lg: clamp(2.25rem, 1.8rem + 1.8vw, 4rem);
+  --space-xl: clamp(3rem, 2.2rem + 3vw, 6rem);
+
+  /* Shared premium surface language so scenes feel like one family
+     rather than independently-styled cards. */
+  --shadow-elevated: 0 25px 70px -12px rgba(0, 0, 0, 0.75), 0 4px 18px rgba(0, 0, 0, 0.35);
+  --shadow-glow-amber: 0 0 0 1px rgba(251, 191, 36, 0.15), 0 20px 60px -10px rgba(180, 83, 9, 0.45);
+  --radius-card: 1.25rem;
+}
+
+/* Adaptive content-card sizing.
+   Several scenes (Certificate, Promise, Two Questions, Living Letter,
+   Conditional Result) previously capped their main card at a fixed
+   max-h-[60vh]/[68vh] and forced overflow-y-auto on every screen,
+   which is exactly the "fake responsiveness via clipping" pattern
+   the brief calls out — content that fit fine on a 900px-tall
+   desktop viewport was still being squeezed and scrollbar'd.
+   This scales the ceiling with real available height (dvh) and
+   gives it far more room on tall/desktop viewports, only falling
+   back to a scrollbar as a genuine safety net on short viewports
+   (e.g. a landscape phone), never as the default experience. */
+.scene-card {
+  max-height: min(88dvh, 46rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+@media (min-width: 768px) {
+  .scene-card { max-height: min(88dvh, 52rem); }
+}
+@media (min-width: 1280px) {
+  .scene-card { max-height: min(90dvh, 60rem); }
+}
+@media (min-width: 1600px) {
+  .scene-card { max-height: min(90dvh, 66rem); }
+}
+@media (max-height: 500px) {
+  /* Mobile landscape: height is the scarce dimension, so this is
+     the one context where a nearly-full-viewport scroll area is the
+     correct choice rather than a compromise. */
+  .scene-card { max-height: 94dvh; }
+}
+
+@layer utilities {
+  /* Fluid display / heading scale. Grows continuously with viewport
+     width instead of snapping at sm/md/lg — reduces the "stretched
+     mobile layout" feeling on in-between desktop sizes (1366/1440). */
+  .text-fluid-hero {
+    font-size: clamp(2.25rem, 1.4rem + 3.6vw, 4.75rem);
+    line-height: 1.05;
+  }
+  .text-fluid-h1 {
+    font-size: clamp(1.75rem, 1.2rem + 2.2vw, 3.25rem);
+    line-height: 1.1;
+  }
+  .text-fluid-h2 {
+    font-size: clamp(1.375rem, 1.05rem + 1.3vw, 2.25rem);
+    line-height: 1.15;
+  }
+  .text-fluid-body {
+    font-size: clamp(0.9375rem, 0.87rem + 0.3vw, 1.0625rem);
+    line-height: 1.6;
+  }
+
+  /* Ultra-wide staging container: keeps content from stretching
+     edge-to-edge into a thin centered column at 1920+, while still
+     letting the ambient background breathe. Desktop-first, not a
+     stretched mobile column. */
+  .stage-max {
+    width: min(94vw, 1760px);
+    margin-inline: auto;
+  }
+  .stage-max-narrow {
+    width: min(92vw, 1200px);
+    margin-inline: auto;
+  }
+
+  .font-cinzel {
+    font-family: 'Cinzel', serif;
+  }
+  .font-cormorant {
+    font-family: 'Cormorant Garamond', serif;
+  }
+  .font-sans {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+
+  .text-glow-amber {
+    text-shadow: 0 0 15px rgba(245, 158, 11, 0.7), 0 0 30px rgba(217, 119, 6, 0.5), 0 0 50px rgba(180, 83, 9, 0.3);
+  }
+
+  .text-glow-gold {
+    text-shadow: 0 0 12px rgba(251, 191, 36, 0.8), 0 0 25px rgba(245, 158, 11, 0.5), 0 0 45px rgba(217, 119, 6, 0.3);
+  }
+
+  .box-glow-gold {
+    box-shadow: 0 0 20px rgba(251, 191, 36, 0.4), inset 0 0 15px rgba(251, 191, 36, 0.2);
+  }
+
+  /* Custom scrollbar styling for parchment & letters */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: rgba(217, 119, 6, 0.1);
+    border-radius: 8px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(180, 83, 9, 0.4);
+    border-radius: 8px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(180, 83, 9, 0.7);
+  }
+}
+
+@keyframes subtle-vibrate {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  25% { transform: translate(-1px, 1px) rotate(-0.1deg); }
+  50% { transform: translate(1px, -1px) rotate(0.1deg); }
+  75% { transform: translate(-1px, -0.5px) rotate(0.05deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+@keyframes intense-vibrate {
+  0% { transform: translate(0, 0) scale(1); }
+  20% { transform: translate(-3px, 2px) scale(1.002); }
+  40% { transform: translate(3px, -2px) scale(0.998); }
+  60% { transform: translate(-2px, -3px) scale(1.003); }
+  80% { transform: translate(2px, 3px) scale(0.997); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+
+.animate-vibrate-subtle {
+  animation: subtle-vibrate 0.15s infinite linear;
+}
+
+.animate-vibrate-intense {
+  animation: intense-vibrate 0.08s infinite linear;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-vibrate-subtle,
+  .animate-vibrate-intense {
+    animation: none !important;
+  }
+}
+
+/* Vault door rivet ring radius. Inline styles can't use Tailwind's
+   breakpoint prefixes (e.g. "sm:translateY(...)" inside a JS template
+   literal is invalid CSS and gets dropped), so the radius that scales
+   with the vault door's own responsive size lives here instead. */
+.rivet-ring-item {
+  --rivet-radius: -125px;
+}
+@media (min-width: 640px) {
+  .rivet-ring-item { --rivet-radius: -165px; }
+}
+@media (min-width: 768px) {
+  .rivet-ring-item { --rivet-radius: -195px; }
+}
+
+
