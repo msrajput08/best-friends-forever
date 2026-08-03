@@ -7,6 +7,7 @@ export default function SiteLock({
   onUnlock: () => void;
 }) {
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -39,13 +40,23 @@ export default function SiteLock({
     <div className="h-screen flex items-center justify-center bg-black">
       <div className="space-y-4 w-80">
 
-        <input
-          type="password"
-          value={password}
-          onChange={(e)=>setPassword(e.target.value)}
-          placeholder="Enter Password"
-          className="w-full border p-3 rounded"
-        />
+        <div className="relative">
+          <input
+            type={showPassword ? "text" : "password"}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Enter Password"
+            className="w-full border p-3 rounded pr-12"
+          />
+
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+          >
+            {showPassword ? "🙈" : "👁️"}
+          </button>
+        </div>
 
         <button
           onClick={unlock}
