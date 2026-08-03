@@ -23,6 +23,8 @@ export default function SiteLock({
         },
       }
     );
+    console.log("FUNCTION DATA:", data);
+    console.log("FUNCTION ERROR:", error);
 
     setLoading(false);
 
