@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import SiteLock from "./components/SiteLock/SiteLock";  
 import { ActiveScene } from './types';
 import { Scene1Container } from './components/Scene1Intro/Scene1Container';
 import { VaultContainer } from './components/Scene2Vault/VaultContainer';
@@ -16,10 +17,18 @@ import { TwoQuestionsScene } from './components/Scene11TwoQuestions/TwoQuestions
 import { ConditionalResultScene } from './components/Scene12ConditionalResult/ConditionalResultScene';
 import { FinaleScene } from './components/Scene13Finale/FinaleScene';
 import { NavigationOverlay } from './components/NavigationOverlay';
-import { JourneyTimeline } from './components/common/JourneyTimeline';
+// import { JourneyTimeline } from './components/common/JourneyTimeline';
 import { memoryPoolService } from './utils/memoryPool';
 
 export default function App() {
+
+  const [unlocked, setUnlocked] = useState(false);
+
+useEffect(() => {
+  if (sessionStorage.getItem("siteUnlocked") === "true") {
+    setUnlocked(true);
+  }
+}, []);
   const [activeScene, setActiveScene] = useState<ActiveScene>('SCENE_1');
   const [answers, setAnswers] = useState<{ answer1: 'YES' | 'NO'; answer2: 'YES' | 'NO' }>({
     answer1: 'YES',
@@ -80,6 +89,13 @@ export default function App() {
     memoryPoolService.resetSession();
     setActiveScene('SCENE_1');
   };
+  if (!unlocked) {
+  return (
+    <SiteLock
+      onUnlock={() => setUnlocked(true)}
+    />
+  );
+}
 
   return (
     <main className="w-screen h-screen bg-black overflow-hidden relative">
