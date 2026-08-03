@@ -1,31 +1,34 @@
 import { serve } from "https://deno.land/std/http/server.ts";
 
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type",
+};
+
 serve(async (req) => {
+
+  // Handle preflight request
+  if (req.method === "OPTIONS") {
+    return new Response("ok", {
+      headers: corsHeaders,
+    });
+  }
+
   const { password } = await req.json();
 
-  // const realPassword = Deno.env.get("SITE_PASSWORD");
-  const realPassword = "dosti-yaari";
+    const realPassword = Deno.env.get("SITE_PASSWORD");
+  
 
-  if (password === realPassword) {
-    return new Response(
-      JSON.stringify({
-        success: true,
-      }),
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-  }
+  const success = password === realPassword;
 
   return new Response(
     JSON.stringify({
-      success: false,
+      success,
     }),
     {
-      status: 401,
       headers: {
+        ...corsHeaders,
         "Content-Type": "application/json",
       },
     }

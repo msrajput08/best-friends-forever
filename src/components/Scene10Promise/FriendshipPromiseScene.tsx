@@ -126,7 +126,7 @@ export const FriendshipPromiseScene: React.FC<FriendshipPromiseSceneProps> = ({
         }}
         transition={{
           duration: isFolding ? 1.4 : 6,
-          repeat: isFolding ? 0 : Infinity,
+        
           ease: 'easeInOut',
         }}
         className={`relative w-full max-w-2xl bg-amber-50/95 text-neutral-900 rounded-2xl border-4 p-4 sm:p-8 md:p-10 my-2 sm:my-4 shadow-[0_30px_70px_rgba(0,0,0,0.85)] flex flex-col justify-between transition-all duration-700 scene-card custom-scrollbar ${
