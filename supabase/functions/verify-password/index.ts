@@ -3,7 +3,8 @@ import { serve } from "https://deno.land/std/http/server.ts";
 serve(async (req) => {
   const { password } = await req.json();
 
-  const realPassword = Deno.env.get("SITE_PASSWORD");
+  // const realPassword = Deno.env.get("SITE_PASSWORD");
+  const realPassword = "dosti-yaari";
 
   if (password === realPassword) {
     return new Response(
