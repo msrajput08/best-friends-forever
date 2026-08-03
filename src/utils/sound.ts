@@ -6,6 +6,7 @@ class SoundEngine {
   private ambientGain: GainNode | null = null;
   private ambientOsc1: OscillatorNode | null = null;
   private ambientOsc2: OscillatorNode | null = null;
+  private ambientAudio: HTMLAudioElement | null = null;
 
   private initCtx() {
     if (!this.ctx) {
@@ -34,43 +35,21 @@ class SoundEngine {
   }
 
   // Soft ambient drone for curiosity & mystery
-  public startAmbientHum() {
-    if (this.isMuted) return;
-    try {
-      this.initCtx();
-      if (!this.ctx) return;
+public startAmbientHum() {
+  if (this.isMuted) return;
 
-      if (this.ambientGain) return; // already playing
-
-      const now = this.ctx.currentTime;
-      this.ambientGain = this.ctx.createGain();
-      this.ambientGain.gain.setValueAtTime(0, now);
-      this.ambientGain.gain.linearRampToValueAtTime(0.08, now + 3);
-
-      this.ambientOsc1 = this.ctx.createOscillator();
-      this.ambientOsc2 = this.ctx.createOscillator();
-
-      this.ambientOsc1.type = 'sine';
-      this.ambientOsc1.frequency.setValueAtTime(55, now); // Low A
-
-      this.ambientOsc2.type = 'triangle';
-      this.ambientOsc2.frequency.setValueAtTime(110.5, now); // Slightly detuned A
-
-      const filter = this.ctx.createBiquadFilter();
-      filter.type = 'lowpass';
-      filter.frequency.setValueAtTime(250, now);
-
-      this.ambientOsc1.connect(filter);
-      this.ambientOsc2.connect(filter);
-      filter.connect(this.ambientGain);
-      this.ambientGain.connect(this.ctx.destination);
-
-      this.ambientOsc1.start(now);
-      this.ambientOsc2.start(now);
-    } catch (e) {
-      console.warn('Audio start ambient error:', e);
+  try {
+    if (!this.ambientAudio) {
+      this.ambientAudio = new Audio('/audio/ambient.mp3');
+      this.ambientAudio.loop = true;
+      this.ambientAudio.volume = 0.1;
     }
+
+    this.ambientAudio.play().catch(() => {});
+  } catch (e) {
+    console.warn('Audio start ambient error:', e);
   }
+}
 
   // Heartbeat pulse for countdown numbers (5,4,3,2,1)
   public playHeartbeat(count: number) {
@@ -140,6 +119,10 @@ class SoundEngine {
           this.ambientOsc2.stop();
           this.ambientOsc2 = null;
         }
+        if (this.ambientAudio) {
+  this.ambientAudio.pause();
+  this.ambientAudio.currentTime = 0;
+}
         this.ambientGain = null;
       }
     } catch (e) {
