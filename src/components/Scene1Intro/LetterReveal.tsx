@@ -10,8 +10,8 @@ interface LetterRevealProps {
 
 const LINE_1 = ['A'];
 const LINE_2 = ['F', 'R', 'I', 'E', 'N', 'D', 'S', 'H', 'I', 'P'];
-const LINE_3 = ['T', 'H', 'A', 'T', 'N', 'E', 'V', 'E', 'R'];
-const LINE_4 = ['G', 'I', 'V', 'E', 'S', 'U', 'P','💗'];
+const LINE_3 = ['T', 'H', 'A', 'T',' ', 'N', 'E', 'V', 'E', 'R'];
+const LINE_4 = ['G', 'I', 'V', 'E', 'S',' ', 'U', 'P',' ','💗'];
 
 export const LetterReveal: React.FC<LetterRevealProps> = ({ phase, onSequenceComplete }) => {
   const [visibleCount1, setVisibleCount1] = useState(0);
