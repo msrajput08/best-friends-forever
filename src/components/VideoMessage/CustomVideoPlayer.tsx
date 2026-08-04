@@ -48,6 +48,7 @@ export const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({
         setTimeout(() => {
           setIsPlaying(false);
           onPlayStateChange?.(false);
+          soundEngine.resumeAmbient();
           onEnded();
         }, 5000);
       } else {
@@ -61,7 +62,7 @@ export const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({
     if (!video) return;
 
     if (video.paused) {
-      soundEngine.stopAllSound();
+      soundEngine.pauseAmbient();
       video.play().catch(() => {
         setHasError(true);
       });
@@ -70,6 +71,7 @@ export const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({
     } else {
       video.pause();
       setIsPlaying(false);
+      soundEngine.resumeAmbient();
       onPlayStateChange?.(false);
     }
   };
@@ -112,7 +114,7 @@ export const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({
     const video = videoRef.current;
     if (!video) return;
     video.currentTime = 0;
-    soundEngine.stopAllSound();
+    soundEngine.pauseAmbient();
     video.play().catch(() => setHasError(true));
     setIsPlaying(true);
     onPlayStateChange?.(true);
@@ -131,6 +133,9 @@ export const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({
   const handleVideoEnded = () => {
     setIsPlaying(false);
     onPlayStateChange?.(false);
+
+     soundEngine.resumeAmbient();
+
     onEnded();
   };
 

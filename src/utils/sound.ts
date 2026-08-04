@@ -102,6 +102,23 @@ public startAmbientHum() {
     }
   }
 
+  public pauseAmbient() {
+  if (this.ambientAudio) {
+    this.ambientAudio.pause();
+  }
+}
+
+public resumeAmbient() {
+  if (this.isMuted) return;
+
+  if (!this.ambientAudio) {
+    this.startAmbientHum();
+    return;
+  }
+
+  this.ambientAudio.play().catch(() => {});
+}
+
   // Instant complete silence at 0
   public stopAllSound() {
     try {
@@ -119,10 +136,10 @@ public startAmbientHum() {
           this.ambientOsc2.stop();
           this.ambientOsc2 = null;
         }
-        if (this.ambientAudio) {
-  this.ambientAudio.pause();
-  this.ambientAudio.currentTime = 0;
-}
+//         if (this.ambientAudio) {
+//   this.ambientAudio.pause();
+//   this.ambientAudio.currentTime = 0;
+// }
         this.ambientGain = null;
       }
     } catch (e) {
