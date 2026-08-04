@@ -8,14 +8,16 @@ interface LetterRevealProps {
   onSequenceComplete: () => void;
 }
 
-const LINE_1 = ['H', 'A', 'P', 'P', 'Y'];
+const LINE_1 = ['A'];
 const LINE_2 = ['F', 'R', 'I', 'E', 'N', 'D', 'S', 'H', 'I', 'P'];
-const LINE_3 = ['D', 'A', 'Y'];
+const LINE_3 = ['T', 'H', 'A', 'T', 'N', 'E', 'V', 'E', 'R'];
+const LINE_4 = ['G', 'I', 'V', 'E', 'S', 'U', 'P','💗'];
 
 export const LetterReveal: React.FC<LetterRevealProps> = ({ phase, onSequenceComplete }) => {
   const [visibleCount1, setVisibleCount1] = useState(0);
   const [visibleCount2, setVisibleCount2] = useState(0);
   const [visibleCount3, setVisibleCount3] = useState(0);
+  const [visibleCount4, setVisibleCount4] = useState(0);
 
   useEffect(() => {
     if (phase !== 'LETTER_REVEAL') return;
@@ -23,48 +25,62 @@ export const LetterReveal: React.FC<LetterRevealProps> = ({ phase, onSequenceCom
     let idx1 = 0;
     let idx2 = 0;
     let idx3 = 0;
+    let idx4 = 0;
 
     // Step 1: Reveal HAPPY
-    const timer1 = setInterval(() => {
-      if (idx1 < LINE_1.length) {
-        idx1++;
-        setVisibleCount1(idx1);
-        soundEngine.playLetterShimmer();
-      } else {
-        clearInterval(timer1);
+const timer1 = setInterval(() => {
+  if (idx1 < LINE_1.length) {
+    idx1++;
+    setVisibleCount1(idx1);
+    soundEngine.playLetterShimmer();
+  } else {
+    clearInterval(timer1);
 
-        // Short pause then reveal FRIENDSHIP
-        setTimeout(() => {
-          const timer2 = setInterval(() => {
-            if (idx2 < LINE_2.length) {
-              idx2++;
-              setVisibleCount2(idx2);
-              soundEngine.playLetterShimmer();
-            } else {
-              clearInterval(timer2);
+    // Reveal LINE 2
+    setTimeout(() => {
+      const timer2 = setInterval(() => {
+        if (idx2 < LINE_2.length) {
+          idx2++;
+          setVisibleCount2(idx2);
+          soundEngine.playLetterShimmer();
+        } else {
+          clearInterval(timer2);
 
-              // Short pause then reveal DAY
-              setTimeout(() => {
-                const timer3 = setInterval(() => {
-                  if (idx3 < LINE_3.length) {
-                    idx3++;
-                    setVisibleCount3(idx3);
-                    soundEngine.playLetterShimmer();
-                  } else {
-                    clearInterval(timer3);
+          // Reveal LINE 3
+          setTimeout(() => {
+            const timer3 = setInterval(() => {
+              if (idx3 < LINE_3.length) {
+                idx3++;
+                setVisibleCount3(idx3);
+                soundEngine.playLetterShimmer();
+              } else {
+                clearInterval(timer3);
 
-                    // All letters revealed, complete sequence
-                    setTimeout(() => {
-                      onSequenceComplete();
-                    }, 600);
-                  }
-                }, 110);
-              }, 250);
-            }
-          }, 90);
-        }, 250);
-      }
-    }, 110);
+                // Reveal LINE 4
+                setTimeout(() => {
+                  const timer4 = setInterval(() => {
+                    if (idx4 < LINE_4.length) {
+                      idx4++;
+                      setVisibleCount4(idx4);
+                      soundEngine.playLetterShimmer();
+                    } else {
+                      clearInterval(timer4);
+
+                      // All letters revealed
+                      setTimeout(() => {
+                        onSequenceComplete();
+                      }, 600);
+                    }
+                  }, 110);
+                }, 250);
+              }
+            }, 110);
+          }, 250);
+        }
+      }, 90);
+    }, 250);
+  }
+}, 110);
 
     return () => {
       clearInterval(timer1);
@@ -103,7 +119,7 @@ export const LetterReveal: React.FC<LetterRevealProps> = ({ phase, onSequenceCom
                     : { opacity: 0, y: 25, scale: 0.5, filter: 'blur(8px)' }
                 }
                 transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-                className="font-cinzel text-[clamp(2.25rem,10vw,7.5rem)] font-extrabold text-amber-200 text-glow-gold tracking-wider select-none drop-shadow-[0_0_20px_rgba(251,191,36,0.6)]"
+                className="font-cinzel text-[clamp(1.8rem,8vw,5rem)] font-extrabold text-amber-200 text-glow-gold tracking-wider select-none drop-shadow-[0_0_20px_rgba(251,191,36,0.6)]"
               >
                 {char}
               </motion.span>
@@ -154,6 +170,27 @@ export const LetterReveal: React.FC<LetterRevealProps> = ({ phase, onSequenceCom
             );
           })}
         </div>
+        <div className="flex items-center justify-center space-x-1 sm:space-x-3 md:space-x-5">
+  {LINE_4.map((char, idx) => {
+    const isVisible = showAll || idx < visibleCount4;
+
+    return (
+      <motion.span
+        key={`line4-${idx}`}
+        initial={{ opacity: 0, y: 25, scale: 0.5, filter: 'blur(8px)' }}
+        animate={
+          isVisible
+            ? { opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }
+            : { opacity: 0, y: 25, scale: 0.5, filter: 'blur(8px)' }
+        }
+        transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+        className="font-cinzel text-[clamp(2rem,8vw,5.5rem)] font-extrabold text-amber-200 text-glow-gold tracking-wider select-none drop-shadow-[0_0_20px_rgba(251,191,36,0.6)]"
+      >
+        {char}
+      </motion.span>
+    );
+  })}
+</div>
       </div>
     </div>
   );

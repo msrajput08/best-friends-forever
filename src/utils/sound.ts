@@ -42,7 +42,7 @@ public startAmbientHum() {
     if (!this.ambientAudio) {
       this.ambientAudio = new Audio('/audio/ambient.mp3');
       this.ambientAudio.loop = true;
-      this.ambientAudio.volume = 0.1;
+      this.ambientAudio.volume = 0.25;
     }
 
     this.ambientAudio.play().catch(() => {});
